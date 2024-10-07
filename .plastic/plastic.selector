@@ -1,0 +1,4 @@
+repository "GamepPlatformerver1.0@khoindse170017@cloud"
+  path "/"
+    br "/main"
+    co "/main"
