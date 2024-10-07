@@ -3,7 +3,10 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;  // Required for UI elements
-using TMPro;  // For TextMeshPro components
+using TMPro;
+using System.Net.Http;
+using System.Threading.Tasks;
+using UnityEngine.Networking;  // For TextMeshPro components
 
 public class HealthPickup : MonoBehaviour
 {
@@ -27,6 +30,9 @@ public class HealthPickup : MonoBehaviour
     }
 
     private List<QuestionDto> questionDtos = new List<QuestionDto>();
+    private static readonly string questionsAPIstr = "https://fu-pru-game-server-apis.onrender.com/api/v1/questions";
+    private static readonly string loginAPIstr = "https://fu-pru-game-server-apis.onrender.com/api/v1/login";//TODO
+    private List<ResponseQuestion> responseQuestions = new List<ResponseQuestion>();
     private static readonly System.Random r = new System.Random();
     // public GameObject questionPanel;
     public GameObject subQuestionPanel;
@@ -36,14 +42,16 @@ public class HealthPickup : MonoBehaviour
     public Button CButton;
     public Button DButton;
     private QuestionDto currentQuestion;
+    private ResponseQuestion currFetchedQuestion;
     private int healthRestore;
     private bool questionAnswered = false;
     private bool answerCorrect = false;
     private Coroutine questionTimerCoroutine; // To store the coroutine reference
+    private static readonly HttpClient client = new HttpClient();
 
-    void Start()
+    async void Start()
     {
-        //TODO: fetching question here
+        StartCoroutine(GetQuestions());
         questionDtos.Add(new QuestionDto("What is the capital of France?",
             new Dictionary<char, string> { { 'A', "Paris" }, { 'B', "Berlin" }, { 'C', "Rome" }, { 'D', "Madrid" } }, 'A'));
 
@@ -52,6 +60,48 @@ public class HealthPickup : MonoBehaviour
 
         questionDtos.Add(new QuestionDto("What is the largest ocean on Earth?",
             new Dictionary<char, string> { { 'A', "Atlantic" }, { 'B', "Indian" }, { 'C', "Pacific" }, { 'D', "Southern" } }, 'C'));
+
+
+
+    }
+    IEnumerator GetQuestions()
+    {
+        using (UnityWebRequest webRequest = UnityWebRequest.Get(questionsAPIstr))
+        {
+            // Request and wait for the desired page.
+            yield return webRequest.SendWebRequest();
+
+            if (webRequest.result == UnityWebRequest.Result.ConnectionError || webRequest.result == UnityWebRequest.Result.DataProcessingError)
+            {
+                Debug.LogError("Error: " + webRequest.error);
+            }
+            else if (webRequest.result == UnityWebRequest.Result.ProtocolError)
+            {
+                Debug.LogError("HTTP Error: " + webRequest.error);
+            }
+            else
+            {
+                // Parse JSON response
+                string json = webRequest.downloadHandler.text;
+                responseQuestions = JsonUtility.FromJson<List<ResponseQuestion>>(json);
+                HandleQuestions(responseQuestions);
+            }
+        }
+    }
+    void HandleQuestions(List<ResponseQuestion> questions)
+    {
+        if (questions != null && questions.Count > 0)
+        {
+            foreach (var question in questions)
+            {
+                Debug.Log($" Question: {question.QuestionText}, Answer: {question.AnswerChoice}");
+            }
+            // Process the data as needed
+        }
+        else
+        {
+            Debug.LogError("Failed to parse questions data or no data received");
+        }
     }
 
     private void OnTriggerEnter2D(Collider2D collision)
@@ -121,12 +171,19 @@ public class HealthPickup : MonoBehaviour
         DButton.gameObject.SetActive(true);  // Activate the D button
         questionText.gameObject.SetActive(true);  // Activate the question text
 
-        // Show the full question with answer choices in the questionText
-        questionText.text = currentQuestion.QuestionTxt + "\n" +
-                            "A: " + currentQuestion.AnswerChoices['A'] + "\n" +
-                            "B: " + currentQuestion.AnswerChoices['B'] + "\n" +
-                            "C: " + currentQuestion.AnswerChoices['C'] + "\n" +
-                            "D: " + currentQuestion.AnswerChoices['D'];
+        // // Show the full question with answer choices in the questionText
+        // questionText.text = currentQuestion.QuestionTxt + "\n" +
+        //                     "A: " + currentQuestion.AnswerChoices['A'] + "\n" +
+        //                     "B: " + currentQuestion.AnswerChoices['B'] + "\n" +
+        //                     "C: " + currentQuestion.AnswerChoices['C'] + "\n" +
+        //                     "D: " + currentQuestion.AnswerChoices['D'];
+
+
+        # region using question fetched from server
+        Debug.Log(responseQuestions.Count);
+        currFetchedQuestion = responseQuestions[0];
+        questionText.text = currFetchedQuestion.QuestionText;
+        #endregion
 
         // Set the button texts to only show 'A', 'B', 'C', 'D'
         TMP_Text aButtonText = AButton.GetComponentInChildren<TMP_Text>();
@@ -157,7 +214,7 @@ public class HealthPickup : MonoBehaviour
         }
 
         // Check if the answer is correct
-        if (answer == currentQuestion.CorrectAnswer)
+        if (answer == currFetchedQuestion.AnswerChoice)
         {
             answerCorrect = true;
         }
