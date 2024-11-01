@@ -337,6 +337,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a057f09162228704fb9aa1a943b32fc4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  healthChanged:
+    m_PersistentCalls:
+      m_Calls: []
   damageableHit:
     m_PersistentCalls:
       m_Calls:
@@ -352,10 +355,16 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
+  characterDamaged:
+    m_PersistentCalls:
+      m_Calls: []
+  characterHealed:
+    m_PersistentCalls:
+      m_Calls: []
   isInvicible: 0
-  _maxHealth: 100
+  _maxHealth: 50
   _isAlive: 1
-  _health: 50
+  _health: 100
   invicibilityTime: 0.25
 --- !u!1 &5699953477116786937
 GameObject:
