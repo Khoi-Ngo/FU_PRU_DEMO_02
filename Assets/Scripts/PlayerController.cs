@@ -3,11 +3,22 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.InputSystem;
+using UnityEngine.SceneManagement;
+using UnityEngine.UI;
 
 [RequireComponent(typeof(Rigidbody2D), typeof(TouchingDirections))]
 public class PlayerController : MonoBehaviour
 {
 
+
+
+    #region pause game
+    public Button quitButton;
+    public Button restartButton;
+    public GameObject pauseMenuPanel;
+    private bool isPaused = false;
+
+    #endregion
     public float walkSpeed = 5f;
     public float airWalkSpeed = 2.5f;
     public float runSpeed = 10f;
@@ -104,6 +115,13 @@ public class PlayerController : MonoBehaviour
         rb = GetComponent<Rigidbody2D>();
         animator = GetComponent<Animator>();
         touchingDirections = GetComponent<TouchingDirections>();
+
+        if (pauseMenuPanel != null)
+            pauseMenuPanel.SetActive(false);
+        if (quitButton != null)
+            quitButton.onClick.AddListener(QuitGame);
+        if (restartButton != null)
+            restartButton.onClick.AddListener(RestartLevel);
     }
 
     // Start is called before the first frame update
@@ -212,5 +230,36 @@ public class PlayerController : MonoBehaviour
         {
             animator.SetBool("isComboAttack", false);
         }
+    }
+
+
+
+    public void RestartLevel()
+    {
+        Time.timeScale = 1; // Ensure game time resumes
+        SceneManager.LoadScene("Level01_ver01"); // Load the specified scene
+    }
+
+
+    void Update()
+    {
+        // Check for the ESC key press to toggle the pause menu
+        if (Keyboard.current.escapeKey.wasPressedThisFrame)
+        {
+            TogglePauseMenu();
+        }
+    }
+
+
+    public void TogglePauseMenu()
+    {
+        isPaused = !isPaused;
+        pauseMenuPanel.SetActive(isPaused);
+        Time.timeScale = isPaused ? 0 : 1;
+    }
+
+    public void QuitGame()
+    {
+        Application.Quit();
     }
 }
