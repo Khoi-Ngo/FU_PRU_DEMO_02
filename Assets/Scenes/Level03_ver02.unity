@@ -11537,7 +11537,7 @@ Transform:
   m_GameObject: {fileID: 436398621}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -262.9, y: -1.8, z: -10}
+  m_LocalPosition: {x: -494.6, y: -5.7, z: -10}
   m_LocalScale: {x: 8.8363, y: 7.2228, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -15817,11 +15817,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 8282287620968371747, guid: a879f04964f89de4e89ea9dedf92528f, type: 3}
       propertyPath: m_LocalPosition.x
-      value: -262.9
+      value: -494.6
       objectReference: {fileID: 0}
     - target: {fileID: 8282287620968371747, guid: a879f04964f89de4e89ea9dedf92528f, type: 3}
       propertyPath: m_LocalPosition.y
-      value: -1.8
+      value: -5.7
       objectReference: {fileID: 0}
     - target: {fileID: 8282287620968371747, guid: a879f04964f89de4e89ea9dedf92528f, type: 3}
       propertyPath: m_LocalPosition.z
@@ -16605,7 +16605,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d7a09c3b664f6f84fac56ea08c664192, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  nextLevelSceneName: Level04
+  nextLevelSceneName: Level_04
   timePanel: {fileID: 673758832}
   timeDisplayText: {fileID: 216007993}
 --- !u!61 &1534614908
@@ -18831,7 +18831,7 @@ Transform:
   m_GameObject: {fileID: 1931379171}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -262.9, y: -1.8, z: -10}
+  m_LocalPosition: {x: -494.6, y: -5.7, z: -10}
   m_LocalScale: {x: 292.39117, y: 68.82886, z: 4.677}
   m_ConstrainProportionsScale: 0
   m_Children:
